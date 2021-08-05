@@ -13,23 +13,17 @@ if ($isAdmin) {
 
     # Install git, add Unix tools to PATH, and make vim the default editor
     Write-Host "Installing git and adding to path" -ForegroundColor Magenta
-    choco install -y git --package-parameters="'/GitAndUnixToolsOnPath /WindowsTerminal'"
+    choco install -y git --package-parameters="'/GitAndUnixToolsOnPath'"
 
     # Install my frequently used programs
     Write-Host "Beginning installation of programs..." -ForegroundColor Magenta
     $packages = @(
         'python', 'sqlite', 'youtube-dl', 'ffmpeg', 'keepassxc', 'vscode',
-        'devcon.portable', '7zip.install', 'vcredist140', 'docker-desktop', 
-        'github-desktop', 'powershell-core', 'microsoft-windows-terminal', 'brave', 
-        'hwinfo', 'nodejs', 'vlc', 'vim'
+        '7zip.install', 'vcredist140', 'docker-desktop', 
+        'github-desktop', 'hwinfo', 'nodejs', 'vlc', 'vim'
     )
 
-    # Install each program and output progress
-    $count = 0
-    For ($i = 0 ; $i -lt $packages.count ; $i++) {
-        Write-Host "Installing package ($j/$packages.count)" -ForegroundColor Magenta
-        choco install $i -y
-    }
+    choco install $packages
 
     # Disable hibernation
     powercfg -h off
@@ -41,23 +35,7 @@ if ($isAdmin) {
     # Enabling Verbose mode in Windows 10
     New-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System -Name VerboseStatus -PropertyType DWORD -Value 1
 
-    # Stop Apps from opening at startup
-    Remove-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "KeePassXC"
-    Remove-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "OneDrive"
-
-    # Remove 3D objects folder, show file extensions
-    Remove-Item "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-    Remove-Item "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}"
-    Set-ItemProperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "HideFileExt" 0
-
-    # Install Powershell Modules
-    Install-Module posh-git
-    Install-Module oh-my-posh
-
-    # Enable Windows Subsytem for Linux
-    Write-Host "Enabling Windows Subsytem for Linux" -ForegroundColor Magenta
-    Enable-WindowsOptionalFeature -Online -FeatureName $("VirtualMachinePlatform", "Microsoft-Windows-Subsystem-Linux")
-    
+   
 } else {    
     Write-Host "Please run this script as an administrator" -ForegroundColor Red
 }
